@@ -10,7 +10,7 @@
 Summary: Tools for creating, working with, and running Rails applications
 Name: rubygem-%{gemname}
 Version: 3.2.13
-Release: 2%{?dist}
+Release: 3%{?dist}
 Group: Development/Languages
 License: MIT
 URL: http://www.rubyonrails.org
@@ -23,6 +23,8 @@ Requires: rubygems
 Requires: rubygem(rake) >= 0.8.7
 Requires: rubygem(thor) >= 0.14.6
 Requires: rubygem(thor) < 2.0
+Requires: rubygem(rack-ssl) => 1.3.2
+Requires: rubygem(rack-ssl) < 1.4
 Requires: rubygem(activesupport) = %{version}
 Requires: rubygem(actionpack) = %{version}
 Requires: rubygem(rdoc) => 3.4
@@ -67,10 +69,14 @@ find .%{geminstdir} -name *.css -type f -perm /a+x -exec %{__chmod} -v 644 {} \;
 
 %install
 %{__mkdir_p} %{buildroot}%{gemdir}
+%{__mkdir_p} %{buildroot}%{_bindir}
+mv .%{gemdir}/bin/* %{buildroot}%{_bindir}/
+rmdir .%{gemdir}/bin
 %{__cp} -a .%{gemdir}/* %{buildroot}%{gemdir}
 
 %files
 %defattr(-, root, root, -)
+%{_bindir}/rails
 %dir %{geminstdir}
 %{geminstdir}/lib
 %{geminstdir}/guides
@@ -79,7 +85,6 @@ find .%{geminstdir} -name *.css -type f -perm /a+x -exec %{__chmod} -v 644 {} \;
 %doc %{geminstdir}/CHANGELOG.md
 %doc %{geminstdir}/README.rdoc
 %doc %{geminstdir}/MIT-LICENSE
-/usr/lib/ruby/gems/%{rubyabi}/bin/rails
 /usr/lib/ruby/gems/%{rubyabi}/gems/railties-%{version}/bin/rails
 
 %files doc
@@ -87,8 +92,10 @@ find .%{geminstdir} -name *.css -type f -perm /a+x -exec %{__chmod} -v 644 {} \;
 %{gemdir}/doc/%{gemname}-%{version}
 
 %changelog
-* Fri Jun 07 2013 Sergey Mihailov <sergey.mihailov@gmail.com> - 3.2.13-1
+* Fri Jun 07 2013 Sergey Mihailov <sergey.mihailov@gmail.com> - 3.2.13-3
 - Update release
+- move rails to /usr/bin
+- add requires rubygem-rack-ssl  
 
 * Tue Jul 17 2012 Miroslav Suchý <msuchy@redhat.com> 3.0.10-2
 - another round of koji building for rhel 6 (lzap+git@redhat.com)
